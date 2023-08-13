@@ -1,0 +1,3 @@
+[submodule "Sources/minizip-ng/code"]
+	path = Sources/minizip-ng/code
+	url = https://github.com/zlib-ng/minizip-ng
