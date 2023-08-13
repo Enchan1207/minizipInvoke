@@ -4,26 +4,31 @@
 import PackageDescription
 
 let package = Package(
-    name: "minizipPackage",
+    name: "minizipEx",
+    platforms: [
+        .macOS(.v12)
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "minizipPackage",
-            targets: ["minizipPackage"]),
+        // executable configuration
+        .executable(
+            name: "minizipExample",
+            targets: ["minizipExample"]),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "minizipPackage",
+        // target for generate executable
+        .executableTarget(
+            name: "minizipExample",
             dependencies: ["Minizip"]),
+        
+        // target for build minizip-ng as Swift module
         .target(
             name: "Minizip",
             dependencies: [],
             path: "Sources/minizip-ng",
             exclude: [
                 "code/test", "code/doc", "code/cmake",
-                "code/mz_strm_os_win32.c", "code/mz_os_win32.c", "code/mz_crypt_winxp.c", "code/mz_crypt_winvista.c"
+                "code/mz_strm_os_win32.c", "code/mz_os_win32.c", "code/mz_crypt_winxp.c", "code/mz_crypt_winvista.c",
+                "code/minizip.c", "code/minigzip.c", "code/mz_crypt_openssl.c", "code/mz_strm_bzip.c", "code/mz_strm_lzma.c", "code/mz_strm_zstd.c"
             ],
             publicHeadersPath: "code",
             cSettings: [
@@ -37,8 +42,5 @@ let package = Package(
             linkerSettings: [
                 .linkedLibrary("z")
             ]),
-        .testTarget(
-            name: "minizipPackageTests",
-            dependencies: ["minizipPackage"]),
     ]
 )
