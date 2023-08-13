@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.cfg": "dotenv",
+        "*.mcmeta": "json",
+        "__config": "c"
+    }
+}
