@@ -28,19 +28,15 @@ let package = Package(
             exclude: [
                 "code/test", "code/doc", "code/cmake",
                 "code/mz_strm_os_win32.c", "code/mz_os_win32.c", "code/mz_crypt_winxp.c", "code/mz_crypt_winvista.c",
-                "code/minizip.c", "code/minigzip.c", "code/mz_crypt_openssl.c", "code/mz_strm_bzip.c", "code/mz_strm_lzma.c", "code/mz_strm_zstd.c"
+                "code/minizip.c", "code/minigzip.c", "code/mz_crypt_openssl.c", "code/mz_strm_bzip.c", "code/mz_strm_lzma.c", "code/mz_strm_zstd.c", "code/mz_strm_zlib.c"
             ],
             publicHeadersPath: "code",
             cSettings: [
-                .define("HAVE_INTTYPES_H"),
-                .define("HAVE_PKCRYPT"),
-                .define("HAVE_STDINT_H"),
-                .define("HAVE_WZAES"),
-                .define("HAVE_ZLIB"),
-                .define("ZLIB_COMPAT")
+                .define("HAVE_WZAES")
             ],
             linkerSettings: [
-                .linkedLibrary("z")
+                .linkedLibrary("compression"),
+                .linkedFramework("Security")
             ]),
     ]
 )
