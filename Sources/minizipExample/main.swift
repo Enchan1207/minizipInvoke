@@ -45,44 +45,38 @@ func main(){
         return
     }
     
-    // 現在のエントリの情報を取得するクロージャ
-    let getFileInfoFromCurrentEntry: (_ reader: UnsafeMutableRawPointer?) -> mz_zip_file? = {reader in
-        var zipfilePtr: UnsafeMutablePointer<mz_zip_file>? = .allocate(capacity: 1)
-        zipfilePtr?.initialize(to: mz_zip_file())
-        let didGetFileInfo = mz_zip_reader_entry_get_info(reader, &zipfilePtr)
-        print(didGetFileInfo)
-        guard didGetFileInfo == MZ_OK else{return nil}
-        let zipfile = zipfilePtr?.pointee
-        zipfilePtr?.deallocate()
-        return zipfile
-    }
-    
     // イテレーション
-    while true {
-        
+    var canContinue: Int32 = MZ_OK
+    while canContinue == MZ_OK {
         // ファイル情報を取得
-        guard let fileInfo = getFileInfoFromCurrentEntry(reader) else {
-            print("Failed to load file info of current entry")
-            break
+        var zipfilePtr: UnsafeMutablePointer<mz_zip_file>? = nil
+        canContinue = mz_zip_reader_entry_get_info(reader, &zipfilePtr)
+        if(canContinue != MZ_OK){
+            print("failed to get info of current entry")
+            continue
         }
-
-        // とりあえずファイル名を並べる
-        if let fileName = String(cString: fileInfo.filename, encoding: .utf8){
-            print(fileName)
-        }else{
-            print("failed to get file name")
-        }
+        let zipfile = zipfilePtr!.pointee
+        
+        // ファイル名を取得
+        let filename = String(cString: zipfile.filename, encoding: .utf8)!
+        print("  file: \(filename)")
         
         // 次のエントリへ
-        let didGoNextEntry = mz_zip_reader_goto_next_entry(reader)
-        if didGoNextEntry != MZ_OK && didGoNextEntry != MZ_END_OF_LIST{
-            print("failed to go next entry: \(didGoNextEntry)")
+        canContinue = mz_zip_reader_goto_next_entry(reader)
+        if canContinue != MZ_OK && canContinue != MZ_END_OF_LIST{
+            print("failed to go next entry: \(canContinue)")
             break
         }
+    }
+    
+    if canContinue == MZ_END_OF_LIST{
+        print("iteration finished.")
+    }else{
+        print("iteration failed: \(canContinue)")
     }
     
     // 後片付け
-//        mz_zip_reader_delete(&reader)
+    mz_zip_reader_delete(&reader)
 }
 
 main()
